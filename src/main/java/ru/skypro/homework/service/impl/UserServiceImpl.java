@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final ImageService imageService;
     private final UserRepository repository;
-    private final UserAvatarRepository userAvatarRepository;
+    //private final UserAvatarRepository userAvatarRepository;
     private final UserMapper mapper;
     private final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
         repository.save(user);
     }
 
-
+/*
     @Value("${avatar.storage.directory}")
     private String avatarStorageDirectory;
 
@@ -161,10 +161,10 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
             throw new RuntimeException("Не удалось сохранить аватар", e);
         }
-    }
-
+    }*/
+/*
     @Override
     public void saveUserAvatar(Authentication authentication, MultipartFile image) {
 
-    }
+    }*/
 }

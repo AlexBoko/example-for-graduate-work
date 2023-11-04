@@ -22,7 +22,7 @@ public interface UserService {
     void updateUser(UpdateUserDto updateUserDto);
 
     void update(MultipartFile image);
-    void saveUserAvatar(MultipartFile avatar);
+    //void saveUserAvatar(MultipartFile avatar);
 
-    void saveUserAvatar(Authentication authentication, MultipartFile image);
+    //void saveUserAvatar(Authentication authentication, MultipartFile image);
 }

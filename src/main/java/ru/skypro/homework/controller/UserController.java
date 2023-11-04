@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 @CrossOrigin("http://localhost:3000")
 public class UserController {
     private final UserService userService;
-    private final UserAvatarRepository userAvatarRepository;
+    //private final UserAvatarRepository userAvatarRepository;
     private final UserRepository userRepository;
 
     @GetMapping("/me")
