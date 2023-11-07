@@ -1,16 +1,20 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserAvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -37,39 +41,37 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UpdateUserDto> updateUserInfo(@RequestBody UpdateUserDto updateUserDto) {
         userService.updateUser(updateUserDto);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/set_password")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Void> setNewPassword(Authentication authentication, @RequestBody NewPasswordDto newPasswordDto) {
         String username = authentication.getName();
         userService.updatePassword(newPasswordDto, username);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateUserImage(@RequestPart("image") MultipartFile image,
+   @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   public ResponseEntity<?> updateUserImage(@RequestPart("image") MultipartFile image,
                                              Authentication authentication) throws IOException {
-        userService.update(image);
-        return ResponseEntity.ok().build();
-    }
+       userService.update(image);
+       //userService.updateUserAvatar(avatarFile, authentication);
+       return ResponseEntity.ok().build();
+   }
 
     @Value("${image.store.path}")
     private String storePath;
-
     @GetMapping(value = "/images/{file.png}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getAvatar(@PathVariable("file.png") String file, Authentication authentication) {
         Path path = Paths.get(storePath, file).toAbsolutePath().normalize();
-        try {
+        try{
             byte[] avatarBytes = Files.readAllBytes(path);
             return ResponseEntity.ok(avatarBytes);
         } catch (IOException e) {
-            throw new RuntimeException("Не удалось получить аватар", e);
+            throw new RuntimeException("Не удалось поменять аватар", e);
         }
     }
 }

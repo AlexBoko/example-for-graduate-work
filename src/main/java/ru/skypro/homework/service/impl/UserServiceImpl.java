@@ -147,7 +147,6 @@ public class UserServiceImpl implements UserService {
         repository.save(user);
     }
 
-
     @Value("${avatar.storage.directory}")
     private String avatarStorageDirectory;
 
