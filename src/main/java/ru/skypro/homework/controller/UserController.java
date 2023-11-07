@@ -14,7 +14,7 @@ import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
 
-
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,10 +71,6 @@ public class UserController {
         userService.updateUserImage(image, username);
         return ResponseEntity.ok().build();
     }
-
-
-    @Value("${image.store.path}")
-    private String storePath;
 
     @GetMapping(value = "/images/{file.png}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getAvatar(@PathVariable("file.png") String file, Authentication authentication) {

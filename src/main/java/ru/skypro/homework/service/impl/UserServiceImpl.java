@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @Service
@@ -45,8 +46,12 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    @Value("${avatar.storage.directory}")
+    //@Value("${avatar.storage.directory}")
+    @Value("${image.store.path}")
     private String avatarStorageDirectory;
+
+    @Value("${image.store.path}")
+    private String storePath;
 
     @Override
     public User find() {
@@ -204,23 +209,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-    @Override
-    public byte[] getAvatarImage(String filename) {
-        try {
-            File imageFile = new File(avatarStorageDirectory + filename);
-            if (imageFile.exists()) {
-                Path imagePath = imageFile.toPath();
-                return Files.readAllBytes(imagePath);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Не удалось получить аватар", e);
-        }
-
-        return null;
-    }
-
-
     @Override
     public boolean isUserAllowedToUpdate(UpdateUserDto updateUserDto) {
 
@@ -260,8 +248,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUserAllowedToUpdateImage(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return true;
+        } else {
+            throw new AccessDeniedException("В доступе отказано: Пользователь не прошел проверку подлинности.");
+        }
 
-        return true;
     }
 
     @Override
@@ -278,5 +271,18 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new AccessDeniedException("Недостаточно прав для обновления изображения пользователя");
         }
+    }
+
+    @Override
+    public byte[] getAvatarImage(String filename) {
+        Path path = Paths.get(storePath, filename).toAbsolutePath().normalize();
+        if(Files.exists(path)) {
+            try {
+                byte[] avatarBytes = Files.readAllBytes(path);
+                return avatarBytes;
+            } catch (IOException e) {
+                throw new RuntimeException("Не удалось получить аватар", e);
+            }
+        } else return new byte[0];
     }
 }
