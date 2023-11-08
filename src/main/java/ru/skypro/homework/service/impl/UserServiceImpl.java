@@ -218,8 +218,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUserAllowedToSetPassword(String username) {
-
-        return true;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return true;
+        } else {
+            throw new AccessDeniedException("В доступе отказано: Пользователь не прошел проверку подлинности.");
+        }
+        //return true;
     }
 
     @Override
@@ -237,12 +242,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(String username, NewPasswordDto newPasswordDto) {
-        Optional<User> user = repository.findByUsername(username);
-        if (encoder.matches(newPasswordDto.getCurrentPassword(), user.get().getPassword()) &&
-                newPasswordDto.getNewPassword() != null &&
-                !newPasswordDto.getNewPassword().equals(newPasswordDto.getCurrentPassword())) {
-            user.get().setPassword(encoder.encode(newPasswordDto.getNewPassword()));
-            repository.save(user.get());
+        if (isUserAllowedToSetPassword(username)) {
+            Optional<User> user = repository.findByUsername(username);
+            if (encoder.matches(newPasswordDto.getCurrentPassword(), user.get().getPassword()) &&
+                    newPasswordDto.getNewPassword() != null &&
+                    !newPasswordDto.getNewPassword().equals(newPasswordDto.getCurrentPassword())) {
+                user.get().setPassword(encoder.encode(newPasswordDto.getNewPassword()));
+                repository.save(user.get());
+            }
+        } else {
+            throw new AccessDeniedException("В доступе отказано: Пользователь не прошел проверку подлинности.");
         }
     }
 
@@ -254,7 +263,6 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new AccessDeniedException("В доступе отказано: Пользователь не прошел проверку подлинности.");
         }
-
     }
 
     @Override
