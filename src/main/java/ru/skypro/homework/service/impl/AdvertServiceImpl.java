@@ -35,11 +35,13 @@ public class AdvertServiceImpl implements AdvertService {
     /**
      * getUser() is a method used to get the current user
      *
-     * @author radyushinaalena
+     * @author AlexBoko
      */
     private User getUser(String username) {
         return userRepository.getUserByUsername(username);
     }
+
+
     /**
      * find(int id) is a public method used to find an ad
      *
@@ -54,7 +56,7 @@ public class AdvertServiceImpl implements AdvertService {
     /**
      * createAdvert(CreateOrUpdateAdDto dto, MultipartFile image) is a public method used to create an ad
      *
-     * @author radyushinaalena
+     * @author radyushinaalena + 1
      */
     @Override
     public AdDto createAdvert(String username, CreateOrUpdateAdDto dto, MultipartFile image) {
@@ -71,6 +73,7 @@ public class AdvertServiceImpl implements AdvertService {
         repository.save(advert);
         return mapper.advertToAdvertDto(advert);
     }
+
 
     /**
      * getAdvertById(int id) is a public method used to read an ad
@@ -92,7 +95,7 @@ public class AdvertServiceImpl implements AdvertService {
     /**
      * getAdvert() is a public method used to read all the author's ads
      *
-     * @author radyushinaalena
+     * @author AlexBoko + 1
      */
     @Override
     public AdsDto getAdvert(String username) {
@@ -103,12 +106,12 @@ public class AdvertServiceImpl implements AdvertService {
         return new AdsDto(advertDtoList);
     }
 
+
     /**
      * getAllAdverts() is a public method used to read all the ads of all the authors
      *
      * @author radyushinaalena
      */
-
     @Override
     public AdsDto getAllAdverts() {
         var advertList = repository.findAll();
@@ -116,10 +119,11 @@ public class AdvertServiceImpl implements AdvertService {
         return new AdsDto(advertDtoList);
     }
 
+
     /**
      * updateAdvert(int id, CreateOrUpdateAdDto dto) is a public method used to update an ad
      *
-     * @author radyushinaalena
+     * @author SergeiAnishchenko + 1
      */
     @Override
     public AdDto updateAdvert(String username, int id, CreateOrUpdateAdDto dto) {
@@ -133,9 +137,9 @@ public class AdvertServiceImpl implements AdvertService {
 
 
     /**
-     * update(int id, MultipartFile image) is a public method used to update the ad image
+     * updateAdImage(String username, int id, MultipartFile image) is a public method used to update the ad image
      *
-     * @author radyushinaalena
+     * @author AlexBoko + 1
      */
     @Override
     public String updateAdImage(String username, int id, MultipartFile image) {
@@ -155,11 +159,22 @@ public class AdvertServiceImpl implements AdvertService {
         return null;
     }
 
+
+    /**
+     * deleteAdvert(int id) is a public method used to delete an ad
+     *
+     * @author AlexBoko
+     */
     @Override
     public void deleteAdvert(int id) {
 
     }
 
+    /**
+     * updateAdvert(int id, CreateOrUpdateAdDto createOrUpdateAdDto) is a public method used to update an ad
+     *
+     * @author AlexBoko
+     */
     @Override
     public Object updateAdvert(int id, CreateOrUpdateAdDto createOrUpdateAdDto) {
         return null;
@@ -174,7 +189,7 @@ public class AdvertServiceImpl implements AdvertService {
     /**
      * deleteAdvert(int id) is a public method used to remove an ad
      *
-     * @author radyushinaalena
+     * @author SergeiAnishchenko + 2
      */
     @Override
     public void deleteAdvert(String username, int id) {
@@ -195,6 +210,11 @@ public class AdvertServiceImpl implements AdvertService {
 
     }
 
+    /**
+     * isAuthor(String username, Integer id) is a method used to check the author of the ad
+     *
+     * @author SergeiAnishchenko
+     */
     private boolean isAuthor(String username, Integer id) {
         return repository.getAdById(id).getAuthor().getId().equals(userRepository.getUserByUsername(username).getId());
     }

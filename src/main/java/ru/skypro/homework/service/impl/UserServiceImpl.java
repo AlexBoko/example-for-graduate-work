@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService {
     private String storePath;
 
 
+    /**
+     * find() is a public method used to get the current user
+     * @author radyushinaalena
+     */
     @Override
     public User find() {
         var username = SecurityContextHolder
@@ -61,11 +65,21 @@ public class UserServiceImpl implements UserService {
         return find(username);
     }
 
+
+    /**
+     * find(String username) is a public method used to get user information from a repository
+     * @author AlexBoko
+     */
     private User find(String username) {
         return repository.findByUsername(username)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+
+    /**
+     * createUser(RegisterDto registerDto) is a public method used to create a user
+     * @author AlexBoko + 1
+     */
     @Override
     public void createUser(RegisterDto registerDto) {
         var user = find(registerDto.getUsername());
@@ -79,17 +93,32 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    /**
+     * getUser() is a public method used to read user information
+     * @author AlexBoko + 1
+     */
     @Override
     public UserDto getUser() {
         return null;
     }
 
+
+    /**
+     * getUser(String username)  is a public method used to read user information
+     * @author AlexBoko + 1
+     */
     @Override
     public UserDto getUser(String username) {
         var user = find(username);
         return mapper.userToUserDto(user);
     }
 
+
+    /**
+     * isUserAllowedToUpdate(String username, UpdateUserDto updateUserDto) is a public method used to check the possibility of updating the user
+     * @author AlexBoko
+     */
     @Override
     public boolean isUserAllowedToUpdate(String username, UpdateUserDto updateUserDto) {
         return false;
@@ -105,6 +134,11 @@ public class UserServiceImpl implements UserService {
         updatePassword(newPasswordDto, username);
     }
 
+
+    /**
+     * updatePassword(NewPasswordDto newPasswordDto, String username) is a public method used to update the password
+     * @author AlexBoko
+     */
     @Override
     public void updatePassword(NewPasswordDto newPasswordDto, String username) {
         Optional<User> user = repository.findByUsername(username);
@@ -117,6 +151,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * updateUser(UpdateUserDto updateUserDto) is a public method used to update user information
+     * @author AlexBoko + 1
+     */
     @Override
     public void updateUser(UpdateUserDto updateUserDto) {
         var user = find();
@@ -125,12 +163,16 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
+
     @Override
     public void updateUser(UpdateUserDto updateUserDto, String username) {
         var user = find(username);
         mapper.update(updateUserDto, user);
         repository.save(user);
     }
+
+
 
     @Override
     public void update(MultipartFile image) {
@@ -144,6 +186,8 @@ public class UserServiceImpl implements UserService {
         user.setImage("/users/images/" + filename);
         repository.save(user);
     }
+
+
 
     public void saveUserAvatar(@RequestPart MultipartFile file) {
         try {
@@ -175,6 +219,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    /**
+     * saveUserAvatar(Authentication authentication, MultipartFile image) is a public method used to save a user's avatar
+     * @author AlexBoko
+     */
     @Override
     public void saveUserAvatar(Authentication authentication, MultipartFile image) {
         if (authentication != null && authentication.isAuthenticated()) {
@@ -195,6 +244,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * updateUserImage(MultipartFile image, String username) is a public method used to update a user's avatar
+     * @author AlexBoko
+     */
     @Override
     public void updateUserImage(MultipartFile image, String username) {
         if (isUserAllowedToUpdateImage(username)) {
@@ -233,6 +286,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * isUserAllowedToSetPassword(String username) is a public method used to check the possibility of updating the user's password
+     * @author AlexBoko
+     */
     @Override
     public boolean isUserAllowedToSetPassword(String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -249,7 +306,10 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-
+    /**
+     * updateUser(String username, UpdateUserDto updateUserDto) is a public method used to update user information
+     * @author AlexBoko
+     */
     @Override
     public void updateUser(String username, UpdateUserDto updateUserDto) {
         var user = find(username);
@@ -257,6 +317,12 @@ public class UserServiceImpl implements UserService {
         repository.save(user);
     }
 
+
+
+    /**
+     * updatePassword(String username, NewPasswordDto newPasswordDto) is a public method used to update the password
+     * @author AlexBoko
+     */
     @Override
     public void updatePassword(String username, NewPasswordDto newPasswordDto) {
         Optional<User> user = repository.findByUsername(username);
@@ -268,6 +334,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * isUserAllowedToUpdateImage(String username) is a public method used to check the possibility of updating the user's image
+     * @author AlexBoko
+     */
     @Override
     public boolean isUserAllowedToUpdateImage(String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -277,6 +347,7 @@ public class UserServiceImpl implements UserService {
             throw new AccessDeniedException("В доступе отказано: Пользователь не прошел проверку подлинности.");
         }
     }
+
 
     @Override
     public String getAvatarUrlByUsername(String username) {
@@ -303,6 +374,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    /**
+     * getAvatarImage(String filename) is a public method used to get user's image
+     * @author AlexBoko
+     */
     @Override
     public byte[] getAvatarImage(String filename) {
         Path path = Paths.get(avatarStorageDirectory, filename).toAbsolutePath().normalize();

@@ -29,10 +29,12 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final CommentMapper mapper;
+
+
     /**
      * getUser() is a method used to get the current user
      *
-     * @author radyushinaalena
+     * @author AlexBoko
      */
     private User getUser(String username) {
         return userRepository.getUserByUsername(username);
@@ -47,6 +49,8 @@ public class CommentServiceImpl implements CommentService {
     private Advert getAdvert(int advertId) {
         return advertService.find(advertId);
     }
+
+
     /**
      * find(int commentId) is a public method used to search for a comment
      *
@@ -62,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
     /**
      * createComment(int advertId, CreateOrUpdateCommentDto createOrUpdateCommentDto) is a public method used to create a comment
      *
-     * @author radyushinaalena
+     * @author radyushinaalena + 2
      */
     @Override
     public CommentDto createComment(String username, int advertId, CreateOrUpdateCommentDto createOrUpdateCommentDto) {
@@ -81,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
     /**
      * getAllCommentsAdvert(int advertId) is a public method used to get all the comments of an ad
      *
-     * @author radyushinaalena
+     * @author radyushinaalena + 1
      */
     @Override
     public CommentsDto getAllCommentsAdvert(int advertId) {
@@ -92,9 +96,9 @@ public class CommentServiceImpl implements CommentService {
 
 
     /**
-     * updateComment(int advertId, int commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto) is a public method used to update an ad comment
+     * updateComment(String username, int advertId, int commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto) is a public method used to update an ad comment
      *
-     * @author radyushinaalena
+     * @author radyushinaalena + 2
      */
     @Override
     public CommentDto updateComment(String username, int advertId, int commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto) {
@@ -112,9 +116,9 @@ public class CommentServiceImpl implements CommentService {
 
 
     /**
-     * deleteComment(int advertId, int commentId) is a public method used to delete an ad comment
+     * deleteComment(String username, int advertId, int commentId) is a public method used to delete an ad comment
      *
-     * @author radyushinaalena
+     * @author SergeiAnishchenko
      */
     @Override
     public void deleteComment(String username, int advertId, int commentId) {
@@ -128,12 +132,22 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
+
+    /**
+     * deleteComment(int id, int commentId) is a public method used to delete an ad comment
+     *
+     * @author SergeiAnishchenko
+     */
     @Override
     public void deleteComment(int id, int commentId) {
 
     }
 
-
+    /**
+     * isAuthor(String username, Integer id) is a method used to check the author of the comment
+     *
+     * @author SergeiAnishchenko
+     */
     private boolean isAuthor(String username, Integer commentId) {
         return commentRepository.getCommentById(commentId).getAuthor().getId().equals(userRepository.getUserByUsername(username).getId());
     }
